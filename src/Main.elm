@@ -69,6 +69,7 @@ type AddItemMsg
   = Name String
   | BuildTime Int
   | AddInput
+  | InputName String
 
 updateAddItem : AddItemMsg -> Item -> Item
 updateAddItem msg model =
@@ -76,6 +77,7 @@ updateAddItem msg model =
     Name name -> { model | name = name }
     BuildTime time -> { model | buildTime = time }
     AddInput -> { model | inputs = emptyInput :: model.inputs }
+    InputName name -> { model | inputs = model.inputs }
 
 parseBuildTime : String -> Msg
 parseBuildTime s =
