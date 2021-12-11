@@ -26,9 +26,12 @@ type alias Input =
   , amount: Int
   }
 
+emptyInput : Input
+emptyInput = Input "" 0
+
 type alias Item =
   { name : String
-  , build_time : Int
+  , buildTime : Int
   , inputs : List Input
   }
   
@@ -63,22 +66,21 @@ update msg model =
     DisplayError s -> model
 
 type AddItemMsg
-  = UpdateName String
-  | UpdateBuildTime Int
-  | AddInput Input
+  = Name String
+  | BuildTime Int
+  | AddInput
 
 updateAddItem : AddItemMsg -> Item -> Item
 updateAddItem msg model =
   case msg of
-    UpdateName name -> { model | name = name }
-    UpdateBuildTime time -> { model | build_time = time }
-    AddInput inputItem -> { model | inputs = inputItem :: model.inputs }
-  
+    Name name -> { model | name = name }
+    BuildTime time -> { model | buildTime = time }
+    AddInput -> { model | inputs = emptyInput :: model.inputs }
 
 parseBuildTime : String -> Msg
 parseBuildTime s =
   case String.toInt s of
-    Just i -> UpdateAdd (UpdateBuildTime i)
+    Just i -> UpdateAdd (BuildTime i)
     Nothing -> DisplayError "Build time is not a number"
 
 -- VIEW
@@ -93,8 +95,8 @@ view model =
 addTypeForm : Item -> Html Msg
 addTypeForm model = 
   div []
-    [  viewInput "text" "Item Name" model.name (\ name -> UpdateAdd (UpdateName name))
-    , viewInput "number" "Build Time" (String.fromInt model.build_time) parseBuildTime
+    [  viewInput "text" "Item Name" model.name (\ name -> UpdateAdd (Name name))
+    , viewInput "number" "Build Time" (String.fromInt model.buildTime) parseBuildTime
     ]
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
